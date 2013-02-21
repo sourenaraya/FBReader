@@ -21,25 +21,14 @@ import QtQuick 1.0
 import com.nokia.meego 1.0
 
 PageStackWindow {
-	id: root
-	property bool fixedOrientation: false
-	property bool invertedTheme: pageStack.currentPage !== null
-								 && pageStack.currentPage.invertedTheme !== undefined
-								 && pageStack.currentPage.invertedTheme
+	id: rootWindow
+	property bool portraitMode: true
 	showToolBar: pageStack.currentPage === null
 				 || pageStack.currentPage.showToolBar === undefined
 				 || pageStack.currentPage.showToolBar
 	
-	onInvertedThemeChanged: theme.inverted = root.invertedTheme
-	
 	initialPage: MainPage {
 		id: mainPage
-		rootWindow: root
-	}
-	
-	Connections {
-		target: screen
-		onCurrentOrientationChanged: root.fixedOrientation = false
 	}
 
 	Connections {
@@ -47,43 +36,38 @@ PageStackWindow {
 
 		onDialogRequested: {
 			var component = Qt.createComponent("SimpleDialog.qml");
-			root.openDialog(component.createObject(mainPage, { handler: object }));
+			rootWindow.openDialog(component.createObject(mainPage, { handler: object }));
 		}
 		
 		onOptionsDialogRequested: {
 			var component = Qt.createComponent("OptionsDialog.qml");
-			root.pageStack.push(component, { handler: object, rootWindow: root, component: component });
+			rootWindow.pageStack.push(component, { handler: object, component: component });
 		}
 		
         onFileDialogRequested: {
 			var component = Qt.createComponent("OpenFileDialog.qml");
-			root.openDialog(component.createObject(mainPage, { handler: object }));
+			rootWindow.openDialog(component.createObject(mainPage, { handler: object }));
 		}
 		
         onTreeDialogRequested: {
 			console.log("bla-bla", object)
 			var component = Qt.createComponent("TreeDialogPage.qml");
-			root.pageStack.push(component, { handler: object, rootWindow: root, component: component });
+			rootWindow.pageStack.push(component, { handler: object, component: component });
 		}
 		
 		onProgressDialogRequested: {
-			root.openDialog(progressDialog.createObject(root.pageStack.parent.parent, { handler: object }));
-		}
-		
-		onQuestionDialogRequested: {
-			var component = Qt.createComponent("QuestionDialog.qml");
-			root.openDialog(component.createObject(root.pageStack.parent.parent, { handler: object }));
+			rootWindow.openDialog(progressDialog.createObject(rootWindow.pageStack.parent.parent, { handler: object }));
 		}
 		
 		onInformationBoxRequested: {
 			// var title, message, button
 			var args = { "titleText": title, "message": message, "acceptButtonText": button };
-			root.openDialog(queryDialog.createObject(mainPage, args));
+			rootWindow.openDialog(queryDialog.createObject(mainPage, args));
 		}
 		onErrorBoxRequested: {
 			// var title, message, button
 			var args = { "titleText": title, "message": message, "acceptButtonText": button };
-			root.openDialog(queryDialog.createObject(mainPage, args));
+			rootWindow.openDialog(queryDialog.createObject(mainPage, args));
 		}
 	}
 	
@@ -96,7 +80,7 @@ PageStackWindow {
 							if (dialog.status == DialogStatus.Closed) {
 								dialog.destroy();
 								// hook for toolbar activity
-								if (root.pageStack.currentPage == mainPage)
+								if (rootWindow.pageStack.currentPage == mainPage)
 									mainPage.state = ""
 							}
 						});
@@ -115,24 +99,23 @@ PageStackWindow {
 		}
 	}
 
-//	Component.onCompleted: {
-//		theme.inverted = true
-//	}
-
-// TODO: Check why it doesn't dissapear sometimes	
-//	Rectangle {
-//		id: overlayRect
-//		anchors.fill: parent
-//		color: "#60000000"
-//		visible: !platformWindow.active
-//		Label {
-//			anchors.centerIn: parent
-//			width: parent.width
-//			text: applicationInfo.bookTitle
-//			font.pixelSize: 70
-//			font.bold: true
-//			color: "white"
-//			horizontalAlignment: Text.AlignHCenter
-//		}
-//	}
+	Component.onCompleted: {
+		theme.inverted = true
+	}
+	
+	Rectangle {
+		id: overlayRect
+		anchors.fill: parent
+		color: "#60000000"
+		visible: !platformWindow.active
+		Label {
+			anchors.centerIn: parent
+			width: parent.width
+			text: applicationInfo.bookTitle
+			font.pixelSize: 70
+			font.bold: true
+			color: "white"
+			horizontalAlignment: Text.AlignHCenter
+		}
+	}
 }

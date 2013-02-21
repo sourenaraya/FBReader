@@ -24,9 +24,8 @@ import org.fbreader 0.14
 
 Page {
 	id: root
-	property variant rootWindow
 	property bool showToolBar: true
-	orientationLock: rootWindow.fixedOrientation ? PageOrientation.LockPrevious : PageOrientation.Automatic
+	orientationLock: (rootWindow.portraitMode) ? PageOrientation.LockPortrait : PageOrientation.LockLandscape
 	tools: ToolBarLayout {
 		id: toolBarLayout
 		Repeater {
@@ -37,8 +36,6 @@ Page {
 				iconSource: modelData.platformIconId === "" ? modelData.iconSource : ""
 				platformIconId: modelData.platformIconId
 				onClicked: {
-					if (toolBarTimer.running)
-						toolBarTimer.restart();
 					switch (modelData.type) {
 					case ToolBarItem.PlainButton:
 					case ToolBarItem.ToggleButton:
@@ -66,14 +63,9 @@ Page {
 			}
 		}
 		ToolIcon {
-			platformIconId: "icon-m-common-" + __iconType + __inverseString
-			property string __iconType: rootWindow.fixedOrientation ? "locked" : "unlocked"
-			property string __inverseString: style.inverted ? "-inverse" : ""
-
+			iconId: (rootWindow.portraitMode) ? "icon-m-image-edit-rotate-right" : "icon-m-image-edit-rotate-left"
 			onClicked: {
-				if (toolBarTimer.running)
-					toolBarTimer.restart();
-				rootWindow.fixedOrientation = !rootWindow.fixedOrientation
+				rootWindow.portraitMode = !rootWindow.portraitMode
 			}
 		}
 		ToolIcon {
@@ -143,9 +135,5 @@ Page {
 		// FIXME: Find the way to find actual ToolBar's height without hardcoding
 		height: 72
 		z: bookView.z + 1
-	}
-	Connections {
-		target: applicationInfo
-		onMainMenuRequested: mainMenu.open()
 	}
 }
