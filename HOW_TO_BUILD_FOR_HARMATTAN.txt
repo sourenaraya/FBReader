@@ -1,0 +1,6 @@
+1) git clone -b qt-mobile git://github.com/sourenaraya/FBReader.git
+2) add to makefiles/target.mk:
+TARGET_ARCH = meego
+UI_TYPE = qml
+
+3) run build_packages.sh meego-debian
