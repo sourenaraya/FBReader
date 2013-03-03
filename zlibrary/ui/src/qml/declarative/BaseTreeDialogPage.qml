@@ -79,7 +79,7 @@ Page {
 		id: toolBarLayout
 		ToolIcon {
 			visible: true
-			platformIconId: "toolbar-previous"
+			platformIconId: "toolbar-back"
 			onClicked: { pageStack.pop(); if (pageStack.depth == 1) root.handler.finish(); }
 		}
 		
