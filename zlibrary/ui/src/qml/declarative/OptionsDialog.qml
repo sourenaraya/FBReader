@@ -31,7 +31,7 @@ Page {
 	tools: ToolBarLayout {
 		id: toolsLayout
 		ToolIcon {
-			platformIconId: "toolbar-previous"
+			platformIconId: "toolbar-back"
 			onClicked: pageStack.pop()
 		}
 	}
@@ -72,10 +72,13 @@ Page {
 			orientationLock: (rootWindow.portraitMode) ? PageOrientation.LockPortrait : PageOrientation.LockLandscape	
 			DialogContent {
 				id: content
+				anchors.fill: parent
+				anchors { leftMargin: 15; topMargin: 15; rightMargin: 15 }
 			}
+
 			tools: ToolBarLayout {
 				ToolIcon {
-					platformIconId: "toolbar-previous"
+					platformIconId: "toolbar-back"
 					onClicked: pageStack.pop()
 				}
 			}
